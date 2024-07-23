@@ -1,0 +1,203 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("APP_DB_URL")
+}
+
+// !TODO: Buat model bareng backend di rapat abis lebaran
+
+// [STATE]
+model Day {
+  id    Int      @id @default(autoincrement())
+  code  String
+  date  DateTime
+  state State[]
+}
+
+model StateGallery {
+  id        Int      @id @default(autoincrement())
+  url       String
+  state     State?   @relation(fields: [stateId], references: [id], onDelete: Cascade)
+  stateId   Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model State {
+  id                Int                 @id @default(autoincrement())
+  name              String
+  day               Day                 @relation(fields: [dayId], references: [id])
+  dayId             Int
+  logo              String
+  gallery           StateGallery[]
+  description       String              @db.MediumText
+  location          String
+  quota             Int
+  organisator       Organisator[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  StateRegistration StateRegistration[]
+}
+
+model StateRegistration {
+  id          Int       @id @default(autoincrement())
+  state       State     @relation(fields: [stateId], references: [id])
+  stateId     Int
+  mahasiswa   Mahasiswa @relation(fields: [mahasiswaId], references: [id])
+  mahasiswaId Int
+
+  // absen
+  firstAttendance     Boolean   @default(false)
+  lastAttendance      Boolean   @default(false)
+  firstAttendanceTime DateTime?
+  lastAttendanceTime  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Mail      Mail[]
+}
+
+// [MalPun]
+
+model MalpunInternal {
+  id             Int       @id @default(autoincrement())
+  code           String
+  mahasiswa      Mahasiswa @relation(fields: [mahasiswaId], references: [id])
+  mahasiswaId    Int
+  attendance     Boolean   @default(false)
+  attendanceTime DateTime?
+
+  // properti tambahan kalo ada sponsor ribet
+  alfagiftId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MalpunExternal {
+  id            Int       @id @default(autoincrement())
+  code          String
+  fullName      String
+  email         String
+  transactionId String?
+  validatedAt   DateTime?
+
+  attendance     Boolean   @default(false)
+  attendanceTime DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Mail      Mail[]
+}
+
+// [Toggle]
+model Toggle {
+  id        Int      @id @default(autoincrement())
+  name      String
+  toggle    Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// [Accounts]
+
+model DivisiPanitia {
+  id      Int       @id @default(autoincrement())
+  name    String
+  panitia Panitia[]
+}
+
+model Panitia {
+  id         Int           @id @default(autoincrement())
+  name       String
+  nim        String        @unique
+  email      String        @unique
+  divisi     DivisiPanitia @relation(fields: [divisiId], references: [id])
+  divisiId   Int
+  isVerified Boolean       @default(false)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
+model Organisator {
+  id         Int      @id @default(autoincrement())
+  name       String
+  nim        String   @unique
+  email      String   @unique
+  state      State    @relation(fields: [stateId], references: [id])
+  stateId    Int
+  isVerified Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Mahasiswa {
+  id       Int    @id @default(autoincrement())
+  name     String
+  nim      String @unique
+  email    String @unique
+  angkatan Int
+  prodi    String
+
+  // personal data
+  whatsapp String
+  lineId   String
+
+  // personal token generated with nanoid
+  token String // MXM24-[nanoid]
+
+  // extra data, soon kalo ada tambahan
+  // -
+
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  StateRegistration StateRegistration[]
+  MalpunInternal    MalpunInternal[]
+  Mail              Mail[]
+}
+
+// !TODO: model akun external
+
+model Logs {
+  id        Int      @id @default(autoincrement())
+  action    String
+  timestamp DateTime @default(now())
+}
+
+// [Mail]
+
+enum MailCategory {
+  WELCOME
+  STATE_REMINDER
+  MALPUN_INTERNAL
+  MALPUN_EXTERNAL
+}
+
+model Mail {
+  id       Int          @id @default(autoincrement())
+  category MailCategory
+
+  // welcome, malpun internal
+  mahasiswa   Mahasiswa? @relation(fields: [mahasiswaId], references: [id])
+  mahasiswaId Int?
+
+  // state reminder
+  stateRegistration   StateRegistration? @relation(fields: [stateRegistrationId], references: [id])
+  stateRegistrationId Int?
+
+  // malpun external
+  buyer            MalpunExternal? @relation(fields: [malpunExternalId], references: [id])
+  malpunExternalId Int?
+
+  // status
+  sentAt DateTime?
+}

@@ -1,0 +1,6 @@
+.react-email
+out
+node_modules
+.env
+
+bun.lockb
