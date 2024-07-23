@@ -36,6 +36,7 @@ app.get("/mail/", async (req, res) => {
 
     return success(res, "Berhasil mendapatkan pending email queue", mails);
   } catch (e) {
+    console.error(e);
     return internalServerError(res);
   }
 });
@@ -92,6 +93,7 @@ app.post("/mail/welcome", async (req, res) => {
 
     return success(res, "Berhasil mengirim email welcome");
   } catch (e) {
+    console.error(e);
     return internalServerError(res);
   }
 });
@@ -155,6 +157,7 @@ app.post("/mail/malpun/internal", async (req, res) => {
 
     return success(res, "Berhasil mengirim email malpun internal");
   } catch (e) {
+    console.error(e);
     return internalServerError(res);
   }
 });
@@ -224,6 +227,7 @@ app.post("/mail/malpun/external", async (req, res) => {
 
     return success(res, "Berhasil mengirim email malpun external");
   } catch (e) {
+    console.error(e);
     return internalServerError(res);
   }
 });
