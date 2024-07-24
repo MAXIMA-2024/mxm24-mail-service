@@ -19,8 +19,12 @@ import {
   welcomeFactory,
   malpunExternalFactory,
   malpunInternalFactory,
+  welcomeInternalPanitiaFactory,
+  welcomeInternalOrganisatorFactory,
+  internalVerificationFactory,
 } from "./utils/mail-factory";
 import { startQueueMailJob, stateReminderJob } from "./services/cron";
+import { verificationSchema } from "./validator/verification";
 
 const app = express();
 app.use(express.json());
@@ -92,6 +96,273 @@ app.post("/mail/welcome", async (req, res) => {
     );
 
     return success(res, "Berhasil mengirim email welcome");
+  } catch (e) {
+    console.error(e);
+    return internalServerError(res);
+  }
+});
+
+app.post("/mail/welcome/internal/panitia", async (req, res) => {
+  try {
+    const validate = await idSchema.safeParseAsync(req.body);
+    if (!validate.success) {
+      return validationError(res, parseZodError(validate.error));
+    }
+
+    const panitia = await db.panitia.findUnique({
+      where: {
+        id: validate.data.id,
+      },
+      include: {
+        divisi: true,
+      },
+    });
+
+    if (!panitia) {
+      return notFound(res, "Panitia tidak ditemukan");
+    }
+
+    const mail = await db.mail.create({
+      data: {
+        category: "INTERNAL_VERIFICATION",
+        panitia: {
+          connect: {
+            id: panitia.id,
+          },
+        },
+      },
+    });
+
+    mailer.sendMail(
+      welcomeInternalPanitiaFactory(panitia.email, {
+        name: panitia.name,
+        divisi: panitia.divisi.name,
+      }),
+      async (err, info) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+
+        // update sentAt
+        await db.mail.update({
+          where: {
+            id: mail.id,
+          },
+          data: {
+            sentAt: new Date(),
+          },
+        });
+      }
+    );
+
+    return success(res, "Berhasil mengirim email welcome internal panitia");
+  } catch (e) {
+    console.error(e);
+    return internalServerError(res);
+  }
+});
+
+app.post("/mail/welcome/internal/organisator", async (req, res) => {
+  try {
+    const validate = await idSchema.safeParseAsync(req.body);
+    if (!validate.success) {
+      return validationError(res, parseZodError(validate.error));
+    }
+
+    const organisator = await db.organisator.findUnique({
+      where: {
+        id: validate.data.id,
+      },
+      include: {
+        state: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    if (!organisator) {
+      return notFound(res, "Organisator tidak ditemukan");
+    }
+
+    const mail = await db.mail.create({
+      data: {
+        category: "INTERNAL_VERIFICATION",
+        organisator: {
+          connect: {
+            id: organisator.id,
+          },
+        },
+      },
+    });
+
+    // send email beneran disini
+    mailer.sendMail(
+      welcomeInternalOrganisatorFactory(organisator.email, {
+        name: organisator.name,
+        state: organisator.state.name,
+      }),
+      async (err, info) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+
+        // update sentAt
+        await db.mail.update({
+          where: {
+            id: mail.id,
+          },
+          data: {
+            sentAt: new Date(),
+          },
+        });
+      }
+    );
+  } catch (e) {
+    console.error(e);
+    return internalServerError(res);
+  }
+});
+
+app.post("/mail/internal/verification", async (req, res) => {
+  try {
+    const validate = await verificationSchema.safeParseAsync(req.body);
+    if (!validate.success) {
+      return validationError(res, parseZodError(validate.error));
+    }
+
+    if (validate.data.role === "panitia") {
+      const haveBeenVerified = await db.mail.findFirst({
+        where: {
+          category: "INTERNAL_VERIFICATION",
+          panitiaId: validate.data.id,
+        },
+      });
+
+      if (haveBeenVerified) {
+        return success(res, "Email internal verification sudah pernah dikirim");
+      }
+
+      const panitia = await db.panitia.findUnique({
+        where: {
+          id: validate.data.id,
+        },
+        include: {
+          divisi: true,
+        },
+      });
+
+      if (!panitia) {
+        return notFound(res, "Panitia tidak ditemukan");
+      }
+
+      const mail = await db.mail.create({
+        data: {
+          category: "INTERNAL_VERIFICATION",
+          panitia: {
+            connect: {
+              id: panitia.id,
+            },
+          },
+        },
+      });
+
+      mailer.sendMail(
+        internalVerificationFactory(panitia.email, {
+          name: panitia.name,
+          data: {
+            role: "panitia",
+            divisi: panitia.divisi.name,
+          },
+        }),
+        async (err, info) => {
+          if (err) {
+            console.log(err);
+            return;
+          }
+
+          // update sentAt
+          await db.mail.update({
+            where: {
+              id: mail.id,
+            },
+            data: {
+              sentAt: new Date(),
+            },
+          });
+        }
+      );
+    } else {
+      const haveBeenVerified = await db.mail.findFirst({
+        where: {
+          category: "INTERNAL_VERIFICATION",
+          organisatorId: validate.data.id,
+        },
+      });
+
+      if (haveBeenVerified) {
+        return success(res, "Email internal verification sudah pernah dikirim");
+      }
+
+      const organisator = await db.organisator.findUnique({
+        where: {
+          id: validate.data.id,
+        },
+        include: {
+          state: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+
+      if (!organisator) {
+        return notFound(res, "Organisator tidak ditemukan");
+      }
+
+      const mail = await db.mail.create({
+        data: {
+          category: "INTERNAL_VERIFICATION",
+          organisator: {
+            connect: {
+              id: organisator.id,
+            },
+          },
+        },
+      });
+
+      mailer.sendMail(
+        internalVerificationFactory(organisator.email, {
+          name: organisator.name,
+          data: {
+            role: "organisator",
+            state: organisator.state.name,
+          },
+        }),
+        async (err, info) => {
+          if (err) {
+            console.log(err);
+            return;
+          }
+
+          // update sentAt
+          await db.mail.update({
+            where: {
+              id: mail.id,
+            },
+            data: {
+              sentAt: new Date(),
+            },
+          });
+        }
+      );
+    }
+
+    return success(res, "Berhasil mengirim email internal verification");
   } catch (e) {
     console.error(e);
     return internalServerError(res);

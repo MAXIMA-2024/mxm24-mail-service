@@ -6,6 +6,9 @@ import {
   malpunExternalFactory,
   malpunInternalFactory,
   stateReminderFactory,
+  welcomeInternalPanitiaFactory,
+  welcomeInternalOrganisatorFactory,
+  internalVerificationFactory,
 } from "../utils/mail-factory";
 
 const queueMailJob = CronJob.from({
@@ -35,6 +38,97 @@ const queueMailJob = CronJob.from({
             );
             break;
           }
+
+          case "INTERNAL_WELCOME": {
+            if (mail.panitiaId) {
+              const panitia = await db.panitia.findUnique({
+                where: {
+                  id: mail.panitiaId,
+                },
+                include: {
+                  divisi: true,
+                },
+              });
+
+              await mailer.sendMail(
+                welcomeInternalPanitiaFactory(panitia?.email!, {
+                  name: panitia?.name!,
+                  divisi: panitia?.divisi.name!,
+                })
+              );
+            } else {
+              const organisator = await db.organisator.findUnique({
+                where: {
+                  id: mail.organisatorId!,
+                },
+                include: {
+                  state: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                },
+              });
+
+              await mailer.sendMail(
+                welcomeInternalOrganisatorFactory(organisator?.email!, {
+                  name: organisator?.name!,
+                  state: organisator?.state.name!,
+                })
+              );
+            }
+
+            break;
+          }
+
+          case "INTERNAL_VERIFICATION": {
+            if (mail.panitiaId) {
+              const panitia = await db.panitia.findUnique({
+                where: {
+                  id: mail.panitiaId,
+                },
+                include: {
+                  divisi: true,
+                },
+              });
+
+              await mailer.sendMail(
+                internalVerificationFactory(panitia?.email!, {
+                  name: panitia?.name!,
+                  data: {
+                    role: "panitia",
+                    divisi: panitia?.divisi.name!,
+                  },
+                })
+              );
+            } else {
+              const organisator = await db.organisator.findUnique({
+                where: {
+                  id: mail.organisatorId!,
+                },
+                include: {
+                  state: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                },
+              });
+
+              await mailer.sendMail(
+                internalVerificationFactory(organisator?.email!, {
+                  name: organisator?.name!,
+                  data: {
+                    role: "organisator",
+                    state: organisator?.state.name!,
+                  },
+                })
+              );
+            }
+
+            break;
+          }
+
           case "MALPUN_INTERNAL": {
             const malpun = await db.malpunInternal.findFirst({
               where: {
@@ -144,6 +238,7 @@ const queueMailJob = CronJob.from({
           },
         });
       } catch (e) {
+        console.error(e);
         /*
             stop job buat hari ini, biarin aja yang sisanya error
          */
