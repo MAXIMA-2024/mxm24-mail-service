@@ -52,7 +52,7 @@ const MaximaWelcomeEmail = ({ name }: MaximaWelcomeEmailProps) => {
             textAlign: "justify",
           }}
         >
-          Tahun ini, tema kita adalah{" "}
+          Tema tahun ini adalah{" "}
           <span
             style={{
               color: "#111111",
