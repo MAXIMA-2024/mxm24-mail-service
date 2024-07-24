@@ -98,8 +98,8 @@ const MaximaInternalVerificationEmail = ({
         </Section>
 
         <Text>
-          Kamu sudah dapat login ke website internal dengan SSO UMN dengan
-          menggunakan email yang telah terdaftar yaa!
+          Kamu sudah dapat login ke website internal dengan SSO UMN menggunakan
+          email yang telah terdaftar yaa!
         </Text>
 
         <Section>
