@@ -124,7 +124,7 @@ app.post("/mail/welcome/internal/panitia", async (req, res) => {
 
     const mail = await db.mail.create({
       data: {
-        category: "INTERNAL_VERIFICATION",
+        category: "INTERNAL_WELCOME",
         panitia: {
           connect: {
             id: panitia.id,
@@ -189,7 +189,7 @@ app.post("/mail/welcome/internal/organisator", async (req, res) => {
 
     const mail = await db.mail.create({
       data: {
-        category: "INTERNAL_VERIFICATION",
+        category: "INTERNAL_WELCOME",
         organisator: {
           connect: {
             id: organisator.id,
