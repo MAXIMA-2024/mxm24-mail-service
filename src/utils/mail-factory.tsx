@@ -9,6 +9,7 @@ import { SendMailOptions } from "nodemailer";
 import MaximaInternalWelcomePanitiaEmail from "../../emails/maxima24-internal-welcome-panitia";
 import MaximaInternalWelcomeOrganisatorEmail from "../../emails/maxima24-internal-welcome-organisator";
 import MaximaInternalVerificationEmail from "../../emails/maxima24-internal-verification";
+import MaximaInternalUniqueCodeEmail from "../../emails/maxima24-internal-unique-code";
 
 export const welcomeFactory = (to: string, params: { name: string }) => {
   const html = render(<MaximaWelcomeEmail {...params} />);
@@ -138,6 +139,25 @@ export const malpunExternalFactory = (
     subject: "Terima kasih telah membeli tiket Malam Puncak MAXIMA 2024!",
     html,
     priority: "high",
+  };
+
+  return options;
+};
+
+export const internalUniqueCodeFactory = (
+  to: string,
+  params: {
+    name: string;
+    code: string;
+  }
+) => {
+  const html = render(<MaximaInternalUniqueCodeEmail {...params} />);
+
+  const options: SendMailOptions = {
+    from: `Maxi dan Xima ${Bun.env.APP_MAIL_USER}`,
+    to,
+    subject: "Kode Unik untuk Akses Website Internal MAXIMA 2024",
+    html,
   };
 
   return options;
