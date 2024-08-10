@@ -43,9 +43,9 @@ const MaximaWelcomeEmail = ({ name }: MaximaWelcomeEmailProps) => {
             textAlign: "justify",
           }}
         >
-          Kami senang banget bisa menyambut kamu di acara tahunan ini, yang
-          bertujuan untuk mengenalkan berbagai UKM, Komunitas, Media Kampus,
-          LSO, dan organisasi lainnya di UMN.
+          Kami sangat senang menyambut kamu di kegiatan tahunan MAXIMA 2024,
+          yang bertujuan untuk mengenalkan berbagai UKM, komunitas, Media
+          Kampus, LSO, dan organisasi lainnya di UMN.
         </Text>
         <Text
           style={{
@@ -61,22 +61,23 @@ const MaximaWelcomeEmail = ({ name }: MaximaWelcomeEmailProps) => {
           >
             Passion Quest Unleashed
           </span>
-          . Kami yakin setiap mahasiswa punya passion dan keunikan
-          masing-masing. Di MAXIMA, kamu akan melihat berbagai penampilan seru
-          dan bisa menemukan kegiatan yang cocok dengan minatmu. Ini adalah
-          kesempatan yang tepat untuk menemukan tempat yang pas buat
-          mengembangkan passion kamu di kampus.
+          . Kami percaya bahwa setiap mahasiswa memiliki passion dan keunikan
+          masing-masing. Di MAXIMA, kamu akan menikmati berbagai penampilan seru
+          dan memiliki kesempatan untuk menemukan kegiatan yang sesuai dengan
+          minat kamu. Ini adalah kesempatan sempurna untuk menemukan tempat yang
+          tepat untuk mengembangkan passion kamu di kampus.
         </Text>
         <Text
           style={{
             textAlign: "justify",
           }}
         >
-          Semoga kamu menikmati setiap momen di MAXIMA 2024 dan menemukan banyak
-          hal baru yang menarik. Jangan ragu untuk menjelajahi semua yang ada
-          dan bergabung dengan komunitas yang sesuai dengan minat mu.
+          Kami berharap kamu bisa menikmati setiap momen di MAXIMA 2024 dan
+          menemukan banyak hal baru yang menarik. Jangan ragu untuk menjelajahi
+          semua yang ada dan bergabung dengan komunitas yang sesuai dengan minat
+          kamu.
         </Text>
-        <Text>Bersiaplah menjelajah, dalam petualangan mencari passion!</Text>
+        <Text>Bersiaplah menjelajah dalam petualangan mencari passion!</Text>
       </Row>
     </BaseDesign>
   );

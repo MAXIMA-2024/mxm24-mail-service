@@ -222,7 +222,7 @@ const queueMailJob = CronJob.from({
                     hour: "numeric",
                     minute: "numeric",
                   }
-                )} - 21:30`,
+                )} - 21.30`,
               })
             );
             break;
@@ -334,7 +334,7 @@ export const stateReminderJob = CronJob.from({
           stateTime: `${new Date(day.date).toLocaleString("id-ID", {
             hour: "numeric",
             minute: "numeric",
-          })} - 21:30`,
+          })} - 21.30`,
         }),
         async (err, info) => {
           if (err) {

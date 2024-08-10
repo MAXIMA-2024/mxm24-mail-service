@@ -67,7 +67,7 @@ const MaximaMalpunInternalEmail = ({
           </Text>
         </Section>
 
-        <Text>Maxi dan Xima tunggu kehadiranmu yaa MAXIMERS!</Text>
+        <Text>Maxi dan Xima menantikan kehadiranmu, MAXIMERS!</Text>
 
         <Section>
           <Text
@@ -91,7 +91,7 @@ const MaximaMalpunInternalEmail = ({
               marginBottom: "8px",
             }}
           >
-            Lihat Tiket!
+            Lihat Tiket
           </Button>
 
           <Section
