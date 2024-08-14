@@ -85,7 +85,7 @@ const MaximaMalpunExternalEmail = ({
               margin: "0px",
             }}
           >
-            Tanggal: 7 Oktober 2024
+            Tanggal: 21 September 2024
           </Text>
           <Text
             style={{

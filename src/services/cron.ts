@@ -149,7 +149,7 @@ const queueMailJob = CronJob.from({
                 name: malpun?.mahasiswa?.name!,
                 ticketUrl:
                   (Bun.env.MALPUN_TICKET_CALLBACK_URL ??
-                    "https://maximaumn.id/malpun/ticket/details?code=") +
+                    "https://maximaumn.id/malpun/myticket?order_id=") +
                   malpun?.code,
               })
             );
@@ -166,7 +166,7 @@ const queueMailJob = CronJob.from({
                 name: malpunExternal?.fullName!,
                 ticketUrl:
                   (Bun.env.MALPUN_TICKET_CALLBACK_URL ??
-                    "https://maximaumn.id/malpun/ticket/details?code=") +
+                    "https://maximaumn.id/malpun/myticket?order_id=") +
                   malpunExternal?.code,
                 transactionId: malpunExternal?.transactionId!,
                 transactionDate: new Date(

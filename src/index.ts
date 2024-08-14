@@ -406,7 +406,7 @@ app.post("/mail/malpun/internal", async (req, res) => {
         name: malpun.mahasiswa.name,
         ticketUrl:
           (Bun.env.MALPUN_TICKET_CALLBACK_URL ??
-            "https://maximaumn.id/malpun/ticket/details?code=") + malpun.code,
+            "https://maximaumn.id/malpun/myticket?order_id=") + malpun.code,
       }),
       async (err, info) => {
         if (err) {
@@ -450,6 +450,18 @@ app.post("/mail/malpun/external", async (req, res) => {
       return notFound(res, "MalPun entry tidak ditemukan");
     }
 
+    // check if email is already on queue
+    const haveBeenSent = await db.mail.findFirst({
+      where: {
+        category: "MALPUN_EXTERNAL",
+        malpunExternalId: malpun.id,
+      },
+    });
+
+    if (haveBeenSent) {
+      return success(res, "Email malpun external sudah pernah dikirim");
+    }
+
     const mail = await db.mail.create({
       data: {
         category: "MALPUN_EXTERNAL",
@@ -467,7 +479,7 @@ app.post("/mail/malpun/external", async (req, res) => {
         name: malpun.fullName,
         ticketUrl:
           (Bun.env.MALPUN_TICKET_CALLBACK_URL ??
-            "https://maximaumn.id/malpun/ticket/details?code=") + malpun.code,
+            "https://maximaumn.id/malpun/myticket?order_id=") + malpun.code,
         transactionId: malpun.transactionId!,
         transactionDate: new Date(malpun.validatedAt!).toLocaleString("id-ID", {
           weekday: "long",
