@@ -214,7 +214,7 @@ const queueMailJob = CronJob.from({
               stateReminderFactory(state?.mahasiswa.email!, {
                 name: state?.mahasiswa.name!,
                 stateName: state?.state.name!,
-                stateLogo: state?.state.logo!,
+                stateLogo: `${Bun.env.APP_CDN_URL}${state?.state.logo!}`,
                 stateLocation: state?.state.location!,
                 stateTime: `${new Date(state?.state.day.date!).toLocaleString(
                   "id-ID",
@@ -329,7 +329,7 @@ export const stateReminderJob = CronJob.from({
         stateReminderFactory(reg.mahasiswa.email, {
           name: reg.mahasiswa.name,
           stateName: reg.state.name,
-          stateLogo: reg.state.logo,
+          stateLogo: `${Bun.env.APP_CDN_URL}${reg.state.logo}`,
           stateLocation: reg.state.location,
           stateTime: `${new Date(day.date).toLocaleString("id-ID", {
             hour: "numeric",
