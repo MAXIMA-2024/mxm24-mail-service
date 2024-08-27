@@ -18,7 +18,7 @@ const MaximaMalpunExternalEmail = ({
 }: MaximaMalpunExternalEmailProps) => {
   return (
     <BaseDesign
-      bannerUrl="https://cdn.maximaumn.id/email_assets/banner_state.png"
+      bannerUrl="https://cdn.maximaumn.id/email_assets/banner_malpun.png"
       preview={`Hi ${name}, Terima kasih telah membeli tiket Malam Puncak MAXIMA 2024 ...`}
     >
       <Section>
@@ -92,7 +92,7 @@ const MaximaMalpunExternalEmail = ({
               margin: "0px",
             }}
           >
-            Waktu: 17:00 - Selesai
+            Waktu: 16:00 - Selesai
           </Text>
         </Section>
 
