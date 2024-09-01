@@ -8,7 +8,8 @@
     "export": "email export",
     "db:generate": "prisma generate",
     "start": "bun src/index.ts",
-    "manual": "bun src/manual/sendUnsentEmails.ts"
+    "manual": "bun src/manual/sendUnsentEmails.ts",
+    "resend": "bun src/manual/sendAllUnsentEmails.ts"
   },
   "dependencies": {
     "@prisma/client": "5.17.0",
