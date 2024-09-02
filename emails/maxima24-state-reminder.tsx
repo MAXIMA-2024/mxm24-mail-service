@@ -83,8 +83,8 @@ const MaximaSTATEReminderEmail = ({
         </Section>
 
         <Text>
-          Diharapkan datang tepat waktu dan jangan lupa membawa KTM dan alat
-          tulis ya!
+          Diharapkan datang tepat waktu dan jangan lupa untuk membaca SOP
+          terlebih dahulu ya!
         </Text>
 
         <Button

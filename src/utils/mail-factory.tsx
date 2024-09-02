@@ -98,6 +98,12 @@ export const stateReminderFactory = (
     subject: `Reminder: Hari ini STATE - ${params.stateName}`,
     html,
     priority: "high",
+    attachments: [
+      {
+        filename: "SOP_STATE_MAXIMA_2024.pdf",
+        path: "https://cdn.maximaumn.id/email_assets/SOP_STATE_MAXIMA_2024.pdf",
+      },
+    ],
   };
 
   return options;
