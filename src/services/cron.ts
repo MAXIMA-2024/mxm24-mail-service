@@ -266,7 +266,7 @@ export const startQueueMailJob = CronJob.from({
 export const stateReminderJob = CronJob.from({
   cronTime: "0 0 8 * * *",
   timeZone: "Asia/Jakarta",
-  runOnInit: true,
+  // runOnInit: false,
   onTick: async () => {
     console.log("sending state reminder");
     const days = await db.day.findMany();
