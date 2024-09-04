@@ -31,6 +31,9 @@ const mailerSingleton = async () => {
         clientSecret: Bun.env.APP_MAIL_CLIENT_SECRET,
         refreshToken: Bun.env.APP_MAIL_REFRESH_TOKEN,
       },
+
+      maxMessages: 25,
+      maxConnections: 3,
     });
 
     return transporter;
