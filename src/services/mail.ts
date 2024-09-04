@@ -32,7 +32,7 @@ const mailerSingleton = async () => {
         refreshToken: Bun.env.APP_MAIL_REFRESH_TOKEN,
       },
 
-      maxMessages: 25,
+      maxMessages: 20,
       maxConnections: 3,
     });
 
