@@ -216,7 +216,7 @@ const queueMailJob = CronJob.from({
                 stateName: state?.state.name!,
                 stateLogo: `${Bun.env.APP_CDN_URL}${state?.state.logo!}`,
                 stateLocation: state?.state.location!,
-                stateTime: `17.15 - 21.00`,
+                stateTime: `17.00 - 21.00`,
               })
             );
             break;
@@ -325,7 +325,7 @@ export const stateReminderJob = CronJob.from({
           stateName: reg.state.name,
           stateLogo: `${Bun.env.APP_CDN_URL}${reg.state.logo}`,
           stateLocation: reg.state.location,
-          stateTime: `17.15 - 21.00`,
+          stateTime: `17.00 - 21.00`,
         }),
         async (err, info) => {
           if (err) {

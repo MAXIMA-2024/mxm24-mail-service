@@ -218,7 +218,7 @@ const sendEmail = async (id: number) => {
             stateName: state?.state.name!,
             stateLogo: `${Bun.env.APP_CDN_URL}${state?.state.logo!}`,
             stateLocation: state?.state.location!,
-            stateTime: `17.15 - 21.00`,
+            stateTime: `17.00 - 21.00`,
           })
         );
         break;
