@@ -10,6 +10,7 @@ import MaximaInternalWelcomePanitiaEmail from "../../emails/maxima24-internal-we
 import MaximaInternalWelcomeOrganisatorEmail from "../../emails/maxima24-internal-welcome-organisator";
 import MaximaInternalVerificationEmail from "../../emails/maxima24-internal-verification";
 import MaximaInternalUniqueCodeEmail from "../../emails/maxima24-internal-unique-code";
+import MaximaMalpunInvitationEmail from "../../emails/maxima24-malpun-invitation";
 
 export const welcomeFactory = (to: string, params: { name: string }) => {
   const html = render(<MaximaWelcomeEmail {...params} />);
@@ -117,6 +118,25 @@ export const malpunInternalFactory = (
   }
 ) => {
   const html = render(<MaximaMalpunInternalEmail {...params} />);
+
+  const options: SendMailOptions = {
+    from: `Maxi dan Xima ${Bun.env.APP_MAIL_USER}`,
+    to,
+    subject: "Kamu berhasil mendapatkan tiket Malam Puncak MAXIMA 2024!",
+    html,
+  };
+
+  return options;
+};
+
+export const malpunInvitationFactory = (
+  to: string,
+  params: {
+    name: string;
+    ticketUrl: string;
+  }
+) => {
+  const html = render(<MaximaMalpunInvitationEmail {...params} />);
 
   const options: SendMailOptions = {
     from: `Maxi dan Xima ${Bun.env.APP_MAIL_USER}`,

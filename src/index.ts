@@ -22,6 +22,7 @@ import {
   welcomeInternalPanitiaFactory,
   welcomeInternalOrganisatorFactory,
   internalVerificationFactory,
+  malpunInvitationFactory,
 } from "./utils/mail-factory";
 import { startQueueMailJob, stateReminderJob } from "./services/cron";
 import { verificationSchema } from "./validator/verification";
@@ -511,6 +512,78 @@ app.post("/mail/malpun/external", async (req, res) => {
     return success(res, "Berhasil mengirim email malpun external");
   } catch (e) {
     console.error(e);
+    return internalServerError(res);
+  }
+});
+
+app.post("/mail/malpun/invitation", async (req, res) => {
+  try {
+    const validate = await idSchema.safeParseAsync(req.body);
+    if (!validate.success) {
+      return validationError(res, parseZodError(validate.error));
+    }
+
+    const malpunInvitation = await db.malpunExternal.findFirst({
+      where: {
+        id: validate.data.id,
+        isInvited: true,
+      },
+    });
+
+    if (!malpunInvitation) {
+      return notFound(res, "MalPun entry tidak ditemukan");
+    }
+
+    const haveBeenSent = await db.mail.findFirst({
+      where: {
+        category: "MALPUN_INVITATION",
+        malpunExternalId: malpunInvitation.id,
+      },
+    });
+
+    if (haveBeenSent) {
+      return success(res, "Email malpun invitation sudah pernah dikirim");
+    }
+
+    const mail = await db.mail.create({
+      data: {
+        category: "MALPUN_INVITATION",
+        buyer: {
+          connect: {
+            id: malpunInvitation.id,
+          },
+        },
+      },
+    });
+
+    mailer.sendMail(
+      malpunInvitationFactory(malpunInvitation.email, {
+        name: malpunInvitation.fullName,
+        ticketUrl:
+          (Bun.env.MALPUN_TICKET_CALLBACK_URL ??
+            "https://maximaumn.id/malpun/myticket?order_id=") +
+          malpunInvitation.code,
+      }),
+      async (err, info) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+
+        await db.mail.update({
+          where: {
+            id: mail.id,
+          },
+          data: {
+            sentAt: new Date(),
+          },
+        });
+      }
+    );
+
+    return success(res, "Berhasil mengirim email malpun invitation");
+  } catch (err) {
+    console.error(err);
     return internalServerError(res);
   }
 });

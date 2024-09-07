@@ -9,6 +9,7 @@ import {
   welcomeInternalPanitiaFactory,
   welcomeInternalOrganisatorFactory,
   internalVerificationFactory,
+  malpunInvitationFactory,
 } from "../utils/mail-factory";
 
 const queueMailJob = CronJob.from({
@@ -218,6 +219,46 @@ const queueMailJob = CronJob.from({
                 stateLocation: state?.state.location!,
                 stateTime: `17.00 - 21.00`,
               })
+            );
+            break;
+          }
+
+          case "MALPUN_INVITATION": {
+            const malpunInvitation = await db.malpunExternal.findFirst({
+              where: {
+                id: mail.malpunExternalId!,
+                isInvited: true,
+              },
+            });
+
+            if (!malpunInvitation) {
+              console.log("malpun invitation not found");
+              return;
+            }
+
+            mailer.sendMail(
+              malpunInvitationFactory(malpunInvitation.email, {
+                name: malpunInvitation.fullName,
+                ticketUrl:
+                  (Bun.env.MALPUN_TICKET_CALLBACK_URL ??
+                    "https://maximaumn.id/malpun/myticket?order_id=") +
+                  malpunInvitation.code,
+              }),
+              async (err, info) => {
+                if (err) {
+                  console.log(err);
+                  return;
+                }
+
+                await db.mail.update({
+                  where: {
+                    id: mail.id,
+                  },
+                  data: {
+                    sentAt: new Date(),
+                  },
+                });
+              }
             );
             break;
           }
