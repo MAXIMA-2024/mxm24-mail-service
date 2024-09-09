@@ -31,9 +31,9 @@ const MaximaMalpunInvitationEmail = ({
             marginTop: "0px",
           }}
         >
-          Selamat! Kamu telah berhasil mendapatkan tiket Malam Puncak MAXIMA.
-          Terima kasih telah mengisi formulir pendaftaran Malam Puncak Maxima
-          2024!
+          Terima kasih atas kesediannya meluangkan waktu sebagai tamu undangan
+          MAXIMA 2024. Kami dengan senang hati menyambut Anda untuk hadir pada
+          kegiatan Malam Puncak MAXIMA 2024.
         </Text>
         <Text>Malam Puncak Maxima 2024 akan dilaksanakan pada:</Text>
         <Section
@@ -68,7 +68,7 @@ const MaximaMalpunInvitationEmail = ({
           </Text>
         </Section>
 
-        <Text>Maxi dan Xima menantikan kehadiranmu, MAXIMERS!</Text>
+        <Text>Sampai bertemu nanti!</Text>
 
         <Section>
           <Text
